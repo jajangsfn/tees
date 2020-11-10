@@ -1,0 +1,60 @@
+[
+    {
+        "member":
+        [
+            {
+                "id": 1,
+                "nama" : "A",
+                "jenkel" : "P",
+                "ttl" : "1990-11-01",
+                "join" : "2020-11-10 12:53:23"
+            },
+            {
+                "id": 2,
+                "nama" : "B",
+                "jenkel" : "P",
+                "ttl" : "1990-11-01",
+                "join" : "2020-11-10 12:53:23"
+            },
+            {
+                "id": 3,
+                "nama" : "C",
+                "jenkel" : "P",
+                "ttl" : "1990-11-01",
+                "join" : "2020-11-10 12:53:23"
+            },
+            {
+                "id": 4,
+                "nama" : "D",
+                "jenkel" : "L",
+                "ttl" : "2001-12-12",
+                "join" : "2020-01-23 09:03:23"
+            }
+        ]
+    },
+    {
+        "produk" :
+        [
+            {
+                "id" : 1,
+                "nama" : "Kaos Polos Tees Best",
+                "qty" : 2390
+            },
+            {
+                "id" : 2,
+                "nama" : "Kaos Navy Tees Best",
+                "qty" : 230
+            },
+            {
+                "id" : 3,
+                "nama" : "Kaos Maroon Tees Best",
+                "qty" : 29
+            },
+            {
+                "id" : 4,
+                "nama" : "Kaos Mustard Tees Best",
+                "qty" : 657
+            }
+        ]
+    }
+]
