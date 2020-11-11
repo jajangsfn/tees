@@ -34,7 +34,7 @@ if ($method == 'GET') {
     }else if ( !isset($input['id_member']) ){
         echo "ID Member tidak boleh kosong";
     }else {
-        
+
         //check email
         $stmt = $conn->query('SELECT * FROM user  WHERE email = "'.trim($input['email']).'"');
         if ($stmt->num_rows > 0 ) {
@@ -47,9 +47,9 @@ if ($method == 'GET') {
             $stmt -> bind_param("ssssss", $username, $password, $email, $id_member, $created, $updated);
 
             // set parameters and execute
-            $username    = $input['username'];
+            $username    = trim($input['username']);
             $password    = password_hash( trim($input['password']), PASSWORD_DEFAULT);
-            $email       = $input['email'];
+            $email       = trim($input['email']);
             $id_member   = $input['id_member'];
             $created     = date('Y-m-d H:i:s');
             $updated     = date('Y-m-d H:i:s');
