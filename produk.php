@@ -83,7 +83,7 @@ if ($method == 'GET') {
 
         echo "Data berhasil diupdate";
     }
-}else {
+}else if ($method == "DELETE"){
 
     if (!isset($input['id'])) {
         echo "id tidak boleh kosong";
@@ -92,6 +92,8 @@ if ($method == 'GET') {
         $qry = $conn->query("DELETE FROM produk WHERE id = ".$id);
         echo "Data berhasil di delete";
     }
+}else {
+    echo "Method tidak di dukung!";
 }
 
 
