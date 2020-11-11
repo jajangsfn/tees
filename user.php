@@ -34,20 +34,28 @@ if ($method == 'GET') {
     }else if ( !isset($input['id_member']) ){
         echo "ID Member tidak boleh kosong";
     }else {
+        
+        //check email
+        $stmt = $conn->query('SELECT * FROM user  WHERE email = "'.trim($input['email']).'"');
+        if ($stmt->num_rows > 0 ) {
+            echo "Maaf email telah terdaftar";
+        }else {
 
-        // prepare and bind
-        $stmt = $conn->prepare("INSERT INTO user (username, password, email, id_member, created_date, updated_date) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt -> bind_param("ssssss", $username, $password, $email, $id_member, $created, $updated);
+        
+            // prepare and bind
+            $stmt = $conn->prepare("INSERT INTO user (username, password, email, id_member, created_date, updated_date) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt -> bind_param("ssssss", $username, $password, $email, $id_member, $created, $updated);
 
-        // set parameters and execute
-        $username    = $input['username'];
-        $password    = password_hash( trim($input['password']), PASSWORD_DEFAULT);
-        $email       = $input['email'];
-        $id_member   = $input['id_member'];
-        $created     = date('Y-m-d H:i:s');
-        $updated     = date('Y-m-d H:i:s');
-        $stmt->execute();
-        echo "Data user berhasil disimpan";
+            // set parameters and execute
+            $username    = $input['username'];
+            $password    = password_hash( trim($input['password']), PASSWORD_DEFAULT);
+            $email       = $input['email'];
+            $id_member   = $input['id_member'];
+            $created     = date('Y-m-d H:i:s');
+            $updated     = date('Y-m-d H:i:s');
+            $stmt->execute();
+            echo "Data user berhasil disimpan";
+        }
     }
 
 }else if ($method == 'PUT') {
