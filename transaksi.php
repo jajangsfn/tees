@@ -53,7 +53,6 @@ if (isset($_SESSION['is_login'])) {
             $_SESSION['result'] = FALSE;
             $_SESSION['message']= "Harga tidak boleh kosong";
         }else if ( !isset($input['total']) ){
-            
             $_SESSION['result'] = FALSE;
             $_SESSION['message']= "Total tidak boleh kosong";
         }else {
