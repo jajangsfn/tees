@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include "koneksi.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -10,42 +10,60 @@ parse_str(file_get_contents("php://input"), $input);
 //PUT   = update data member
 //DELETE= delete data member
 if ($method == 'GET') {
-    //get id jika ada
-    $where = isset($input['id']) ? "WHERE id=".$input['id'] : "";
-    
-    $qry = $conn->query("SELECT * FROM member ".$where);
+    //cek login untuk admin
+    if (isset($_SESSION['is_login'])) {
+        //get id jika ada
+        $where = isset($input['id']) ? "WHERE id=".$input['id'] : "";
+        
+        $qry = $conn->query("SELECT * FROM member ".$where);
 
-    //jika data ditemukan
-    if ( $qry->num_rows > 0 ) {
-        echo json_encode($qry->fetch_all(MYSQLI_ASSOC));
+        //jika data ditemukan
+        if ( $qry->num_rows > 0 ) {
+            // echo json_encode($qry->fetch_all(MYSQLI_ASSOC));
+            $_SESSION['result'] = TRUE;
+            $_SESSION['message']   = $qry->fetch_all(MYSQLI_ASSOC);
+        }else {
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Data tidak ditemukan";
+        }
     }else {
-        echo "Data tidak ditemukan";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Anda Belum login";
     }
 
 }else if ($method == 'POST') {
     
     //cek param
     if ( !isset($input['nama']) ){
-        echo "Nama tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Nama tidak boleh kosong";
     }else if ( !isset($input['jenkel']) ){
-        echo "Jenis Kelamin tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Jenis Kelamin tidak boleh kosong";
     }else if ( !isset($input['ttl']) ){
-        echo "Tanggal Lahir tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Tanggal Lahir tidak boleh kosong";
     }else if ( !isset($input['alamat']) ){
-        echo "Alamat tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Alamat tidak boleh kosong";
     }else if ( !isset($input['telp']) ){
-        echo "Nomor Handphone tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Nomor Handphone tidak boleh kosong";
     }else if ( !isset($input['username']) ){
-        echo "Username tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Username tidak boleh kosong";
     }else if ( !isset($input['password']) ){
-        echo "Password tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Password tidak boleh kosong";
     }else if ( !isset($input['email']) ){
-        echo "Email tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Email tidak boleh kosong";
     }else {
         //check email
         $stmt = $conn->query('SELECT * FROM user  WHERE email = "'.trim($input['email']).'"');
         if ($stmt->num_rows > 0 ) {
-            echo "Maaf email telah terdaftar";
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Maaf email telah terdaftar";
         }else {
 
             // prepare and bind
@@ -79,33 +97,35 @@ if ($method == 'GET') {
             $updated     = date('Y-m-d H:i:s');
             $stmt2->execute();
 
-            echo "Data berhasil disimpan";
+            $_SESSION['result'] = TRUE;
+            $_SESSION['message']= "Data berhasil disimpan";
         }
     }
 
 }else if ($method == 'PUT') {
-
-    //cek param
-    if ( !isset($input['id']) ){
-        echo "id tidak boleh kosong";
-    //cek param
-    }else if ( !isset($input['nama']) ){
-        echo "Nama tidak boleh kosong";
-    }else if ( !isset($input['jenkel']) ){
-        echo "Jenis Kelamin tidak boleh kosong";
-    }else if ( !isset($input['ttl']) ){
-        echo "Tanggal Lahir tidak boleh kosong";
-    }else if ( !isset($input['alamat']) ){
-        echo "Alamat tidak boleh kosong";
-    }else if ( !isset($input['telp']) ){
-        echo "Nomor Handphone tidak boleh kosong";
-    }else{
-
-        //check email
-        $stmt = $conn->query('SELECT * FROM user  WHERE email = "'.trim($input['email']).'"');
-        if ($stmt->num_rows > 0 ) {
-            echo "Maaf email telah terdaftar";
-        }else {
+    //cek status login
+    if (isset($_SESSION['is_login'])) {
+        //cek param
+        if ( !isset($input['id']) ){
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "id tidak boleh kosong";
+        //cek param
+        }else if ( !isset($input['nama']) ){
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Nama tidak boleh kosong";
+        }else if ( !isset($input['jenkel']) ){
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Jenis Kelamin tidak boleh kosong";
+        }else if ( !isset($input['ttl']) ){
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Tanggal Lahir tidak boleh kosong";
+        }else if ( !isset($input['alamat']) ){
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Alamat tidak boleh kosong";
+        }else if ( !isset($input['telp']) ){
+            $_SESSION['result'] = FALSE;
+            $_SESSION['message']= "Nomor Handphone tidak boleh kosong";
+        }else{
 
             // prepare and bind
             $stmt = $conn->prepare("UPDATE member SET nama = ? , jenkel = ?, ttl = ?, alamat = ? , telp = ? , updated_date = ? WHERE id = ?");
@@ -122,21 +142,32 @@ if ($method == 'GET') {
 
             $stmt->execute();
 
-            echo "Data berhasil diupdate";
+            $_SESSION['result'] = TRUE;
+            $_SESSION['message']= "Data berhasil diupdate";
         }
+    }else {
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "Anda belum login";
     }
+    
 }else if ($method == "DELETE"){
 
     if (!isset($input['id'])) {
-        echo "id tidak boleh kosong";
+        $_SESSION['result'] = FALSE;
+        $_SESSION['message']= "id tidak boleh kosong";
     }else {
         $id  = $input['id'];
         $qry = $conn->query("DELETE FROM member WHERE id = ".$id);
-        echo "Data berhasil di delete";
+
+        $_SESSION['result'] = TRUE;
+        $_SESSION['message']= "Data berhasil di delete";
     }
+    
 }else {
-    echo "Method tidak di dukung!";
+    $_SESSION['result'] = FALSE;
+    $_SESSION['message']= "Method tidak di dukung!";    
 }
 
+echo json_encode($_SESSION);
 
 ?>
