@@ -13,13 +13,11 @@ if ($method == 'GET') {
     //cek login untuk admin
     if (isset($_SESSION['is_login'])) {
         //get id jika ada
-        $where = isset($input['id']) ? "WHERE id=".$input['id'] : "";
-        
-        $qry = $conn->query("SELECT * FROM member ".$where);
+        $where  = isset($input['id']) ? "WHERE id=".$input['id'] : "";
+        $qry    = $conn->query("SELECT * FROM member ".$where);
 
         //jika data ditemukan
         if ( $qry->num_rows > 0 ) {
-            // echo json_encode($qry->fetch_all(MYSQLI_ASSOC));
             $_SESSION['result'] = TRUE;
             $_SESSION['message']   = $qry->fetch_all(MYSQLI_ASSOC);
         }else {
