@@ -13,8 +13,22 @@ if ($method == 'GET') {
     //cek login untuk admin
     if (isset($_SESSION['is_login'])) {
         //get id jika ada
-        $where  = isset($input['id']) ? "WHERE id=".$input['id'] : "";
-        $qry    = $conn->query("SELECT * FROM member ".$where);
+        $where  = isset($_GET['id']) ? "WHERE id=".$_GET['id'] : "";
+        $order  = "";
+
+        if (isset($_GET['type'])) {
+            if ($_GET['type'] == "new") {
+                $order = " ORDER BY t1.created_date DESC";
+            }else if ($_GET['type'] == "most") {
+                $order = " ORDER BY total_belanja DESC";
+            }else {
+                $order = " ORDER BY total_belanja ASC";
+            }
+        }
+
+        $qry    = $conn->query("SELECT t1.*,ifnull(t2.total_belanja,0) total_belanja FROM `member` t1
+                                LEFT JOIN (SELECT id_member,count(*) total_belanja FROM transaksi ".$where."
+                                GROUP BY id_member) t2 ON t2.id_member = t1.id " . $order);
 
         //jika data ditemukan
         if ( $qry->num_rows > 0 ) {
