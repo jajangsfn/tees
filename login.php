@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include "koneksi.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -17,24 +19,46 @@ if ($method == "POST") {
         
         if ($stmt->num_rows > 0) {
             //password from db
-            $password_from_db = $stmt->fetch_array(MYSQLI_ASSOC)['password'];
+            $data_from_db     = $stmt->fetch_array(MYSQLI_ASSOC);
+            $password_from_db = $data_from_db['password'];
             //password from param
             $password   = trim($input['password']);
 
             //verifikasi password
             if (password_verify($password, $password_from_db))
             {
-                echo "Berhasil Login";
+                $_SESSION['username'] = trim($input['username']);
+                $_SESSION['is_login'] = TRUE;
+                $_SESSION['id_member']= $data_from_db['id_member'];
+                $_SESSION['result']   = TRUE;
+                $_SESSION['message']  = "Berhasil Login";
+
+                echo json_encode($_SESSION);
+
             }else {
-                echo "Password Salah";
+                $_SESSION['is_login'] = FALSE;
+                $_SESSION['result']   = FALSE;
+                $_SESSION['message']  = "Password Salah";
+
+                echo json_encode($_SESSION);
             }
             
         }else {
-            echo "Data tidak ditemukan";
+            $_SESSION['is_login'] = FALSE;
+            $_SESSION['result']   = FALSE;
+            $_SESSION['message']  = "Data tidak ditemukan";
+
+            echo json_encode($_SESSION);
         }
         
     }
 }else {
-    echo "Method tidak di dukung";
+    $_SESSION['is_login'] = FALSE;
+    $_SESSION['result']   = FALSE;
+    $_SESSION['message']  = "Method tidak didukung";
+
+    echo json_encode($_SESSION);
 }
+
+
 ?>
