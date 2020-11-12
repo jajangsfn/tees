@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 include "koneksi.php";
 
@@ -13,13 +14,26 @@ if (isset($_SESSION['is_login'])) {
     //DELETE= delete data produk
     if ($method == 'GET') {
         //get id jika ada
-        $where = isset($input['id']) ? "WHERE id=".$input['id'] : "";
+        $where = isset($_GET['id']) ? "WHERE id=".$_GET['id'] : "";
+        $order = "";
         
-        $qry = $conn->query("SELECT * FROM produk ".$where);
+        if (isset($_GET['type'])) {
+            if ($_GET['type'] == "promo") {
+                $where .= ($where) ?  " AND promo is not null" : " WHERE promo is not null";
+            }else if ($_GET['type'] == "most") {
+                $order = " ORDER BY total_qty DESC";
+            }else {
+                $order = " ORDER BY total_qty ASC";
+            }
+        }
+        
+        $qry = $conn->query("SELECT t1.nama, t2.qty, t2.price,sum(ifnull(t2.qty,0)) total_qty FROM `produk` t1 
+                            LEFT JOIN detail_transaksi t2 ON t2.id_produk=t1.id ".$where. " GROUP BY t1.id ".$order);
 
         //jika data ditemukan
         if ( $qry->num_rows > 0 ) {
-            echo json_encode($qry->fetch_all(MYSQLI_ASSOC));
+            $_SESSION['result'] = TRUE;
+            $_SESSION['message']= $qry->fetch_all(MYSQLI_ASSOC);
         }else {
             $_SESSION['result'] = FALSE;
             $_SESSION['message']= "Data tidak ditemukan";

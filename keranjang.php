@@ -8,7 +8,8 @@ parse_str(file_get_contents("php://input"), $input);
 if (isset($_SESSION['is_login'])) {
     if ($method == "GET") {
         //get id jika ada
-        $where  = isset($input['id']) ? "WHERE id=".$input['id'] : "";
+        $where  = " WHERE flag is null AND id_member = ".$_SESSION['id_member']; 
+        $where .= isset($input['id']) ? " amd id=".$input['id'] : "";
         $qry    = $conn->query("SELECT * FROM keranjang ".$where);
 
         //jika data ditemukan
@@ -147,5 +148,6 @@ if (isset($_SESSION['is_login'])) {
     $_SESSION['result'] = FALSE;
     $_SESSION['message']= "Anda belum login";    
 }
+
 echo json_encode($_SESSION);
 ?>
