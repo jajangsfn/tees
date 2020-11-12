@@ -13,12 +13,23 @@ if (isset($_SESSION['is_login'])) {
             $_SESSION['result'] = FALSE;
             $_SESSION['message']= "ID Member tidak boleh kosong";
         }else {
+
+            $where = "WHERE t1.id_member = ".$_SESSION['id_member'];
+            // type data
+            // all tampilkan semua data
+            // tampilkan data sesuai id member
+            if (isset($_GET['type'])) {
+                if ($_GET['type'] == "all") {
+                    $where = "";
+                }
+            }
+            
             $qry = $conn->query("SELECT t1.total,t1.id_member,t3.nama nama_produk,
                                      t2.qty,t2.price,t2.percent_discount,t2.total total_per_produk 
                                     FROM transaksi t1 
                                     JOIN detail_transaksi t2 ON t2.id_transaksi=t1.id
                                     JOIN produk t3 ON t3.id=t2.id_produk
-                                    WHERE t1.id_member = ".$_SESSION['id_member']);
+                                    ".$where);
 
             $_SESSION['result'] = TRUE;
             $_SESSION['message']= $qry->fetch_all(MYSQLI_ASSOC);

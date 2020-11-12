@@ -38,6 +38,7 @@ if ($method == 'GET') {
             $_SESSION['result'] = FALSE;
             $_SESSION['message']= "Data tidak ditemukan";
         }
+        
     }else {
         $_SESSION['result'] = FALSE;
         $_SESSION['message']= "Anda Belum login";
